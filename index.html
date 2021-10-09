@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <title>Leitner Calendar</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1/new.min.css">
+        <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
+    </head>
+    <body>
+        <h1>Leitner Calendar</h1>
+        <p>Today is day <span id="today"></span></p>
+        <p>Do levels <span id="levels"></span></p>
+        <div>
+        <button id="incrementDay">Next</button>
+        <button id="resetDay">Reset</button>
+        </div>
+    </body>
+    <script>
+        // Constants
+        const LEVELS = [
+            { name: '1', color: 'red' },
+            { name: '2', color: 'orange' },
+            { name: '3', color: 'gold' },
+            { name: '4', color: 'green' },
+            { name: '5', color: 'blue' },
+            { name: '6', color: 'purple' },
+            { name: '7', color: 'pink' },
+            ];
+        const showThree = [2,6,10,14];
+        const showFour = [4,13];
+        const showFive = [12];
+        const showSix = [24,59];
+
+        // Add an event listener for the button.
+        document.getElementById("incrementDay").addEventListener("click", () => {
+            if(confirm("Increment Day?")) {
+                const lastDay = localStorage.getItem('lastDay') || 0;
+                localStorage.setItem('lastDay',parseInt(lastDay,10)+1);
+                updateDisplay();
+            }
+        });
+
+        document.getElementById("resetDay").addEventListener("click", () => {
+            if(confirm("Reset Day?")) {
+                localStorage.setItem('lastDay',0);
+                updateDisplay();
+            }
+
+        });
+
+
+        const updateDisplay = () => {
+
+            const lastDay = localStorage.getItem('lastDay') || 0;
+            const today = parseInt(lastDay,10)+1;
+
+            const todayLevels = getLevels(today).map(l => `<span class="level" style="color: ${l.color}">${l.name}</span>`);
+
+            document.getElementById("today").innerHTML = today;
+            document.getElementById("levels").innerHTML = todayLevels;
+
+        };
+
+
+
+        const getLevels = today => {
+            // Always show level 1.
+            const newLevels = [LEVELS[0]];
+            const dayOfSixteen = today % 17;
+
+           if(dayOfSixteen % 2 === 1) newLevels.push(LEVELS[1]); 
+           if(showThree.includes(dayOfSixteen)) newLevels.push(LEVELS[2]); 
+           if(showFour.includes(dayOfSixteen)) newLevels.push(LEVELS[3]); 
+           if(showFive.includes(dayOfSixteen)) newLevels.push(LEVELS[4]); 
+
+            if(showSix.includes(today)) newLevels.push(LEVELS[5]); 
+            if(today === 56) newLevels.push(LEVELS[6]); 
+
+            return newLevels;
+        };
+
+
+        // Set the display values
+        updateDisplay();
+    </script>
+</html>
