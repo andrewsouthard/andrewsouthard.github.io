@@ -1,0 +1,98 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1/new.min.css">
+<link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
+<style>
+section {
+  margin-bottom: 1rem;
+}
+  button {
+    background-color: tomato;
+    color: white;
+    padding: 0.5rem;
+    box-shadow: none;
+    border: 0px;
+    font-size: 1rem;
+    border-radius: 2px;
+  }
+  input {
+    padding: 0.5rem 0.25rem;
+    outline: none;
+    border: 1px solid grey;
+    width: 100px;
+    font-size: 1rem;
+  }
+  section {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  section div {
+    flex: 1;
+  }
+  h2 {
+    margin-top: 0px;
+  }
+</style>
+<h1>Rolling Weight</h1>
+<p>Explainer goes here</p>
+<section>
+<div id="currentAverage">
+<h2>Current Average</h2>
+<p></p>
+</div>
+<div>
+<input name="weight" label="Weight" />
+<button id="addWeight">Add Weight</button>
+</div>
+</section>
+<section id="data">
+<div id="weights">
+  <h2>Weights</h2>
+  <ul></ul>
+</div>
+<div id="pastAverages">
+  <h2>Past Averages</h2>
+  <ul></ul>
+</div>
+</section>
+<script>
+  function getWeights() {
+    const weights = localStorage.getItem("weights");
+    return JSON.parse(weights || "[]");
+  }
+function addWeight() {
+  const newWeight = document.getElementsByName("weight")[0].value
+  const newWeights = getWeights()
+  newWeights.push({ weight: newWeight, time: Date.now()})
+  localStorage.setItem("weights",JSON.stringify(newWeights))
+  setup()
+}
+  function setup() {
+    document.getElementById("addWeight").addEventListener("click", addWeight);
+    setupWeightsList();
+    setupPastAverageWeights();
+  }
+  function setupWeightsList() {
+    document.querySelector("#weights ul").innerHTML = "";
+
+     const weights = getWeights();
+    weights.reverse().forEach(w => {
+      const li = document.createElement("li")
+      const date = new Date(w.time);
+      li.textContent = `${w.weight}  ${date.toLocaleString()}`;
+      document.querySelector("#weights ul").appendChild(li);
+    })
+    const curr = weights.slice(0,7).reduce((sum,w) =>  sum += parseInt(w.weight),0);
+    document.querySelector("#currentAverage p").innerText= curr / weights.length;
+  }
+
+  function setupPastAverageWeights() {
+    const weights = getWeights();
+    if(weights.length > 7) {
+      
+    }
+
+  }
+
+  setup();
+</script>
