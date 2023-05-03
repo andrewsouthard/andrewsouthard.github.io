@@ -79,10 +79,10 @@ function addWeight() {
     weights.reverse().forEach(w => {
       const li = document.createElement("li")
       const date = new Date(w.time);
-      li.textContent = `${w.weight}  ${date.toLocaleString()}`;
+      li.textContent = `${formatWeight(w.weight)}  ${date.toLocaleString()}`;
       document.querySelector("#weights ul").appendChild(li);
     })
-    const curr = weights.slice(0,7).reduce((sum,w) =>  sum += parseInt(w.weight),0);
+    const curr = weights.slice(0,7).reduce((sum,w) =>  sum += formatWeight(w.weight),0);
     document.querySelector("#currentAverage p").innerText= curr / weights.length;
   }
 
@@ -92,6 +92,10 @@ function addWeight() {
       
     }
 
+  }
+  
+  function formatWeight(weight) {
+    return Number(weight.toFixed(1))
   }
 
   setup();
