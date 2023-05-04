@@ -79,11 +79,17 @@ function addWeight() {
     weights.reverse().forEach(w => {
       const li = document.createElement("li")
       const date = new Date(w.time);
+      li.setAttribute("id",w.time);
       li.textContent = `${formatWeight(w.weight)}  ${date.toLocaleString()}`;
+      li.addEventListener('click', () => removeWeight(li))
       document.querySelector("#weights ul").appendChild(li);
+
     })
-    const curr = weights.slice(0,7).reduce((sum,w) =>  sum += formatWeight(w.weight),0);
-    document.querySelector("#currentAverage p").innerText= curr / weights.length;
+    const curr = weights.slice(0,7).reduce((sum,w) => {
+    sum += formatWeight(w.weight);
+      return sum;
+      },0)
+    document.querySelector("#currentAverage p").innerText= formatWeight(curr / weights.length);
   }
 
   function setupPastAverageWeights() {
@@ -91,11 +97,19 @@ function addWeight() {
     if(weights.length > 7) {
       
     }
+  }
 
+  function removeWeight(item) {
+    if(confirm("Remove weight?")) {
+        document.querySelector("#weights ul").removeChild(item);
+        const newWeights = getWeights().filter(w => w.time.toString() !== item.getAttribute("id"));
+        localStorage.setItem("weights",JSON.stringify(newWeights))
+        setupWeightsList()
+    }
   }
   
   function formatWeight(weight) {
-    return Number(weight.toFixed(1))
+    return Number(parseFloat(weight).toFixed(1))
   }
 
   setup();
