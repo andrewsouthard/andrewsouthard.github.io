@@ -32,14 +32,24 @@ section {
   h2 {
     margin-top: 0px;
   }
+  @media only screen and (max-width: 768px) {
+    section {
+      flex-direction: column;
+      align-items: center;
+    }
+    h1, p, h2 {
+      text-align: center;
+    }
+  }
 </style>
-<h1>Rolling Weight</h1>
-<p>Explainer goes here</p>
+<div>
+<h1>Weight Dashboard</h1>  
 <section>
 <div id="currentAverage">
 <h2>Current Average</h2>
 <p></p>
 </div>
+  <br />
 <div>
 <input name="weight" label="Weight" />
 <button id="addWeight">Add Weight</button>
@@ -54,6 +64,8 @@ section {
   <h2>Past Averages</h2>
   <ul></ul>
 </div>
+
+    
 </section>
 <script>
   function getWeights() {
@@ -61,11 +73,13 @@ section {
     return JSON.parse(weights || "[]");
   }
 function addWeight() {
-  const newWeight = document.getElementsByName("weight")[0].value
+  const weightInput = document.getElementsByName("weight")[0];
+  const newWeight = weightInput.value
   const newWeights = getWeights()
   newWeights.push({ weight: newWeight, time: Date.now()})
   localStorage.setItem("weights",JSON.stringify(newWeights))
   setup()
+  weightInput.value = null;
 }
   function setup() {
     document.getElementById("addWeight").addEventListener("click", addWeight);
@@ -88,8 +102,9 @@ function addWeight() {
     const curr = weights.slice(0,7).reduce((sum,w) => {
     sum += formatWeight(w.weight);
       return sum;
-      },0)
-    document.querySelector("#currentAverage p").innerText= formatWeight(curr / weights.length);
+      },0);
+    const numWeights = Math.min(weights.length, 7);
+    document.querySelector("#currentAverage p").innerText= formatWeight(curr / numWeights);
   }
 
   function setupPastAverageWeights() {
